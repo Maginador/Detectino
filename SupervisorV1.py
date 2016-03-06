@@ -153,7 +153,7 @@ class GuiPart(object):
                 s0 = msg.split(",")[0]
                 s1 = msg.split(",")[1]
                 #if s1 == IP_GalileoALfa or s1 == IP_GalileoBeta:
-                tempint = int(s0)
+                #tempint = int(s0)
                 #Escreve_Temp_Banco(session_id,tempint,s1)  # Passo a temperatura como Inteiro para gravar no Banco
                 if s1 == IP_GalileoALfa :
                     self.lbl_Alfa.config(bg='#6EEC78')
@@ -240,12 +240,13 @@ class ThreadedClient(object):
                     if ip == IP_GalileoALfa :
                         self.gui.lbl_Alfa.config(bg='#6EEC78') # Tratativa do Status de conexao galileo
                         c = recebe_msg_galileo(conn,ip,port,self.queue)
-                    if ip == IP_GalileoBeta :
+                    else:
+                        #ip == IP_GalileoBeta
                         self.gui.lbl_Beta.config(bg='#6EEC78')
                         c = recebe_msg_galileo(conn,ip,port,self.queue)
-                    else:
-                        self.gui.lbl_Beta.config(bg='#6EEC78') # Mudar para janela do Android
-                        c = recebe_msg_android(conn,ip,port,self.queue)
+                    #else:
+                        #self.gui.lbl_Beta.config(bg='#6EEC78') # Mudar para janela do Android
+                        #c = recebe_msg_android(conn,ip,port,self.queue)
                     c.start()
                     self.threads.append(c)
         self.tcpsock_g.close()
@@ -277,7 +278,7 @@ class ThreadedClient(object):
         self.gui.greenCircle()
 
         self.periodicCall()
-        pega_msgrobotino("X") # Por Default considera-se que o Robotino esta Parado e Stand by
+        pega_msgrobotino("B") # Por Default considera-se que o Robotino esta Parado e Stand by
 
     def endApplication(self):
         self.running = False
@@ -307,7 +308,7 @@ class recebe_msg_galileo(threading.Thread):     # Thread de comunicacao com Gali
             dataint = int(data)
             print("  Leitura de Temperatura  ", dataint)
             print(" VALOR  STATUS DO ROBO =", ROBOTINO_STOP)
-            if dataint >= 28 and ROBOTINO_STOP == True:
+            if dataint >= 32 and ROBOTINO_STOP == True:
                 print("Temperatura elevada ..................", dataint)
                 print("Processo de ativação do Robotino iniciado .......")
                 if self.ip == IP_GalileoALfa:
@@ -365,6 +366,7 @@ class ThreadReception_robotino(threading.Thread):
                     self.text.yview_scroll(1,"pages")
                     self.text.config(state=DISABLED)
                     message_rec=''
+                    # ROBOTINO_STOP = True
                     # b = webbrowser.get('google-chrome')
                     webbrowser.open_new('http://192.168.1.100:8080')
 
@@ -442,7 +444,7 @@ class envia_msg_robotino(object):
 '''
 
 def pega_msgrobotino(x):
-    if "X" in x:
+    if "B" in x:
         global ROBOTINO_STOP
         ROBOTINO_STOP = True
     else:
@@ -506,7 +508,7 @@ IP_GalileoBeta = '192.168.1.106'
 IP_Robotino = '192.168.1.103'
 IP_Android = '192.168.1.100'
 IP_Server = '192.168.1.102'
-PORT_Robotino = 9350
+PORT_Robotino = 9100
 ROBOTINO_status = 'X'
 # ROBOTINO_STOP = True
 #RegisterDataBase()
